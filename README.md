@@ -1,7 +1,7 @@
 # 🚀 Job Market - Plateforme d'Analyse du Marché de l'Emploi
 
-> **Projet de fin d'études - Data Engineering & Product Management**  
-> *Par Nour Amel SERIR - DataScientest (Mars 2025 - Février 2026)*
+> **Projet de fin d'études - Data Engineering**  
+> *Par Nour Amel SERIR - Liora ex DataScientest (Mars 2025 - Mars 2026)*
 
 ## 📋 Description
 
