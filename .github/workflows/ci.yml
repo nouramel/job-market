@@ -1,0 +1,105 @@
+name: CI Pipeline
+
+on:
+
+  push:
+
+    branches: [ main ]
+
+  pull_request:
+
+    branches: [ main ]
+
+jobs:
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    services:
+
+      postgres:
+
+        image: postgres:15
+
+        env:
+
+          POSTGRES_USER: admin
+
+          POSTGRES_PASSWORD: admin123
+
+          POSTGRES_DB: job_market
+
+        ports:
+
+          - 5432:5432
+
+        options: >-
+
+          --health-cmd pg_isready
+
+          --health-interval 5s
+
+          --health-timeout 5s
+
+          --health-retries 5
+
+    steps:
+
+      - name: Checkout code
+
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+
+        uses: actions/setup-python@v4
+
+        with:
+
+          python-version: '3.12'
+
+      - name: Install dependencies
+
+        run: |
+
+          pip install psycopg2-binary requests fastapi uvicorn
+
+      - name: Init database
+
+        env:
+
+          DB_HOST: localhost
+
+          DB_PORT: 5432
+
+          DB_NAME: job_market
+
+          DB_USER: admin
+
+          DB_PASSWORD: admin123
+
+        run: python data/init_db.py
+
+      - name: Test API startup
+
+        env:
+
+          DB_HOST: localhost
+
+          DB_PORT: 5432
+
+          DB_NAME: job_market
+
+          DB_USER: admin
+
+          DB_PASSWORD: admin123
+
+        run: |
+
+          uvicorn api.main:app --host 0.0.0.0 --port 8000 &
+
+          sleep 3
+
+          curl -f http://localhost:8000/ || exit 1
+
+          echo "API OK"
